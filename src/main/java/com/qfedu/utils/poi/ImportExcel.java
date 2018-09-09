@@ -151,7 +151,9 @@ public class ImportExcel {
                 objectList.add(obj);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //这里已知会报越界异常，可以正常使用，不需要打印栈堆信息
+            //e.printStackTrace();
+            System.out.println("表格内有空值！");
         }
         return objectList;
     }
@@ -209,7 +211,10 @@ public class ImportExcel {
                             break;
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                       // e.printStackTrace();
+                        //这里已知会报越界异常，可以正常使用，不需要打印栈堆信息
+                        //e.printStackTrace();
+                        System.out.println("表格内有空值！");
                     }
                 }
 

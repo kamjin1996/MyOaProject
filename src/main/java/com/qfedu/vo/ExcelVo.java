@@ -47,4 +47,15 @@ public class ExcelVo {
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName;
     }
+
+    @Override
+    public String toString() {
+        return "ExcelVo{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", flag=" + flag +
+                ", departmentName='" + departmentName + '\'' +
+                '}';
+    }
 }
