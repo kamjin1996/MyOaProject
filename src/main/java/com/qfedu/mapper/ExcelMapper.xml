@@ -9,8 +9,30 @@
         <result column="departmentname" property="departmentName"/>
     </resultMap>
 
+
+    <insert id="insertUsers" parameterType="list" useGeneratedKeys="true" keyProperty="id">
+        insert into t_user values
+        <foreach collection="list" item="user" separator=",">
+            (null,#{username},#{password},#{flag})
+        </foreach>
+    </insert>
+
+    <insert id="insertDeps" parameterType="list"  useGeneratedKeys="true" keyProperty="id">
+        insert into t_department values
+        <foreach collection="list" item="dep" separator=",">
+            (null,#{name},#{info},0,now(),#{level})
+        </foreach>
+    </insert>
+
+    <insert id="insertUserDeps" parameterType="list">
+        insert into t_userdepartment values
+        <foreach collection="list" item="userdep" separator=",">
+            (null,#{uid},#{did},now())
+        </foreach>
+    </insert>
+
     <select id="selectExcel" resultMap="BaseResultMap">
-        SELECT u.id,u.username,u.password,d.name departmentname,u.flag
+        SELECT u.id,u.username,u.password,u.flag,d.name departmentname
         FROM t_department d
         LEFT JOIN t_userdepartment ud ON d.id=ud.did
         LEFT JOIN t_user u ON u.id=ud.uid

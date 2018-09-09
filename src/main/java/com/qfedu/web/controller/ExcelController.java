@@ -40,9 +40,6 @@ public class ExcelController {
     @Autowired
     private ExcelService excelServie;
 
-    @Autowired
-    ExcelMapper excelMapper;
-
     //导入Excel
     @RequestMapping("/inexcel.do")
     public @ResponseBody
@@ -60,20 +57,12 @@ public class ExcelController {
     //导出excel
     @RequestMapping("/outexcel.do")
     public void outExcel(HttpServletResponse response) throws Exception {
-        String[] rowName= {"ID","用户名","密码","flag"};
-        List<Object[]> datalist = new ArrayList<>();
-        List<ExcelVo> excelVos = excelMapper.selectExcel();
-        for (ExcelVo excelVo : excelVos) {
-            Object[] o = {excelVo.getId(),excelVo.getUsername(),excelVo.getPassword(),excelVo.getFlag()};
-            datalist.add(o);
-        }
-        String sheetName = "教育";
-        WriteExcel writeExcel = new WriteExcel(rowName,datalist,sheetName);
-        writeExcel.saveToFile("D:/info9.xls");
-        File file = new File("D:/info9.xls");
+        //得到excel的file对象
+        File file = excelServie.outExcel();
         byte[] bytes = FileUtils.readFileToByteArray(file);
-        String filename="default.xls";
+        String filename="userdep.xls";
         filename= URLEncoder.encode(filename,"utf-8");
+        //将文件返回到页面下载
         response.setContentType("application/octet-stream");
         response.setHeader("Content-Disposition","attachment; filename="+filename);
         response.getOutputStream().write(bytes);

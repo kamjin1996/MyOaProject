@@ -179,12 +179,6 @@
           <include>**/*.xml</include>
         </includes>
       </resource>
-      <resource>
-        <directory>src/main/resource</directory>
-        <includes>
-          <include>**/*.bpmn</include>
-        </includes>
-      </resource>
     </resources>
 
   </build>

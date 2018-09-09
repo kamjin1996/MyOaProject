@@ -9,8 +9,12 @@
     <param-value>classpath:spring-*.xml</param-value>
   </context-param>
   <listener>
-    <!--<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>-->
-    <listener-class>com.qfedu.web.listener.MySpringListener</listener-class>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <!--需要在服务器启动后就初始化leave的initpro-->
+  <listener>
+    <listener-class>com.qfedu.web.listener.LeaveInitListener</listener-class>
   </listener>
 
   <!--dispatcherServlet-->

@@ -26,7 +26,7 @@
 
 
   <select id="selectByPage" resultType="com.qfedu.pojo.Department">
-    SELECT d.*,COUNT(ud.did) `count` FROM t_department d LEFT JOIN t_userdepartment ud ON d.id=ud.did GROUP BY ud.did
+    SELECT d.*,COUNT(ud.did) `count` FROM t_department d LEFT JOIN t_userdepartment ud ON d.id=ud.did GROUP BY d.id
     LIMIT #{index},#{limit}
   </select>
 
