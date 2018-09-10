@@ -11,23 +11,23 @@
 
 
     <insert id="insertUsers" parameterType="list" useGeneratedKeys="true" keyProperty="id">
-        insert into t_user values
+        insert into t_user(id,username,password,flag) values
         <foreach collection="list" item="user" separator=",">
-            (null,#{username},#{password},#{flag})
+            (#{user.id},#{user.username},#{user.password},#{user.flag})
         </foreach>
     </insert>
 
     <insert id="insertDeps" parameterType="list"  useGeneratedKeys="true" keyProperty="id">
         insert into t_department values
         <foreach collection="list" item="dep" separator=",">
-            (null,#{name},#{info},0,now(),#{level})
+            (null, #{dep.name},#{dep.info},0,now(),#{dep.level})
         </foreach>
     </insert>
 
     <insert id="insertUserDeps" parameterType="list">
         insert into t_userdepartment values
         <foreach collection="list" item="userdep" separator=",">
-            (null,#{uid},#{did},now())
+            (null,#{userdep.uid},#{userdep.did},now())
         </foreach>
     </insert>
 
@@ -36,6 +36,11 @@
         FROM t_department d
         LEFT JOIN t_userdepartment ud ON d.id=ud.did
         LEFT JOIN t_user u ON u.id=ud.uid
+    </select>
+
+
+    <select id="selectByDepartName" resultType="com.qfedu.pojo.Department">
+        select * from t_department d where d.name = #{departmentName}
     </select>
 
 </mapper>

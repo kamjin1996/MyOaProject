@@ -17,4 +17,6 @@ public interface ExcelMapper {
 
     int insertUserDeps(List<UserDepartment> userDepartments);
 
+    Department selectByDepartName(String departmentName);
+
 }

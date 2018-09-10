@@ -1,6 +1,10 @@
 package com.qfedu.service.impl;
 
+import com.qfedu.mapper.DepartmentMapper;
 import com.qfedu.mapper.ExcelMapper;
+import com.qfedu.pojo.Department;
+import com.qfedu.pojo.User;
+import com.qfedu.pojo.UserDepartment;
 import com.qfedu.service.ExcelService;
 import com.qfedu.utils.poi.ExportExcel;
 import com.qfedu.utils.poi.ImportExcel;
@@ -18,11 +22,15 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ExcelServiceImpl implements ExcelService {
     @Autowired
     private ExcelMapper excelMapper;
+
+    @Autowired
+    private DepartmentMapper departmentMapper;
 
     private static final String IN_TARGET = "D:/userdeps.xls";
 
@@ -40,8 +48,58 @@ public class ExcelServiceImpl implements ExcelService {
         file.transferTo(new File(IN_TARGET));
         File targ = new File(IN_TARGET);
         String path = targ.getAbsolutePath();
-        List<?> list = ImportExcel.importExcel(path, 0, 0, ExcelVo.class);
-        System.out.println(list);
+        List<ExcelVo> list = (List<ExcelVo>) ImportExcel.importExcel(path, 0, 0, ExcelVo.class);
+
+        //开始持久化
+        //插入用户
+        List<User> users = new ArrayList<>();
+        List<Department> departments = new ArrayList<>();
+        List<UserDepartment> uds = new ArrayList<>();
+        //第一个vo为列名
+        for (int i = 0;i < list.size();i++){
+            ExcelVo excelVo = list.get(i);
+            if(Objects.equals("用户名",excelVo.getUsername())){
+                continue;
+            }
+            User user = new User();
+            Department department = new Department();
+            if(excelVo.getId()==null){
+                user.setId(null);
+            } else {
+                user.setId(excelVo.getId());
+            }
+            user.setUsername(excelVo.getUsername());
+            user.setPassword(excelVo.getPassword());
+            user.setFlag(excelVo.getFlag());
+            users.add(user);
+            //部门
+            if(excelVo.getDepartmentName()!=null){
+                //查询部门如果存在，则返回id并设置给当前部门，不存在则创建
+                Department de =  excelMapper.selectByDepartName(excelVo.getDepartmentName());
+                if(de == null){
+                    department.setName(excelVo.getDepartmentName());
+                } else {
+
+                    department.setId(de.getId());
+                }
+            } else {
+                departments.add(department);
+            }
+            departments.add(department);
+            //用户部门
+        }
+        excelMapper.insertUsers(users);
+        excelMapper.insertDeps(departments);
+        //设置uds
+        for(int j = 0;j < users.size();j++){
+            UserDepartment ud = new UserDepartment();
+            ud.setDid(departments.get(j).getId());
+            ud.setUid(users.get(j).getId());
+            uds.add(ud);
+        }
+        excelMapper.insertUserDeps(uds);
+        //插入对应部门
+        //如果部门不存在则创建
         return 0;
     }
 
